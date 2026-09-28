@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="ckb" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>پەڕتووک | کتێبخانەی کوردی</title>
+<meta name="description" content="پەڕتووک: کتێبخانەیەکی کوردی بۆ خوێندنەوە و گوێگرتن لە کتێب.">
+<meta name="theme-color" content="#eceee9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14171c" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preload" href="/books.json" as="fetch" crossorigin>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+:root{
+  --bg:#eceee9;--surface:#fbfbf9;--ink:#1b2230;--muted:#5b6270;--line:#d6dad2;
+  --accent:#7a1f3d;--on-accent:#fff;
+  --font:"Pertwk","Noto Sans Arabic","Segoe UI",Tahoma,system-ui,sans-serif;
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#14171c;--surface:#1c2027;--ink:#e8e9e4;--muted:#99a0ab;--line:#2b3039;--accent:#e07a96;--on-accent:#1a0b11}
+}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.7 var(--font)}
+.wrap{max-width:72rem;margin:0 auto;padding:0 clamp(1rem,4vw,2rem)}
+
+header.wrap{padding-top:clamp(2rem,7vw,4.5rem);padding-bottom:1rem}
+h1{margin:0;font-size:clamp(3rem,13vw,6.5rem);line-height:1.1;font-weight:800;color:var(--accent)}
+.sub{margin:.25rem 0 0;color:var(--muted);font-size:1.05rem}
+
+.tools{position:sticky;top:0;z-index:5;background:var(--bg);padding:.75rem 0 .25rem;border-bottom:1px solid var(--line)}
+#q{width:100%;font:inherit;font-size:1.05rem;padding:.65rem 1rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);-webkit-appearance:none;appearance:none}
+#q:focus{outline:2px solid var(--accent);outline-offset:1px}
+.chips{display:flex;gap:.5rem;overflow-x:auto;padding:.6rem 0 .5rem;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;font:inherit;font-size:.95rem;min-height:40px;padding:.25rem 1rem;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip:focus-visible,.btn:focus-visible,.x:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+main.wrap{padding-top:1.75rem;padding-bottom:4rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(8.5rem,1fr));gap:1.75rem 1.25rem}
+@media (max-width:30rem){.grid{grid-template-columns:repeat(3,1fr);gap:1.25rem .75rem}}
+
+.book{all:unset;display:block;align-self:start;cursor:pointer;min-width:0}
+.cover{position:relative;aspect-ratio:2/3;border-radius:6px 2px 2px 6px;overflow:hidden;background:var(--line);
+  box-shadow:0 1px 1px rgba(20,24,32,.12),0 12px 20px -14px rgba(20,24,32,.6)}
+.cover::after{content:"";position:absolute;inset:0 0 0 auto;width:8%;pointer-events:none;
+  background:linear-gradient(to left,rgba(0,0,0,.3),rgba(255,255,255,.14) 55%,transparent)}
+.cover img{display:block;width:100%;height:100%;object-fit:cover}
+.gen{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:.75rem 1rem .75rem .75rem;text-align:center;color:#fff;font-weight:700;font-size:clamp(.8rem,3vw,1.05rem);line-height:1.5}
+.book:focus-visible .cover{outline:3px solid var(--accent);outline-offset:3px}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  .cover{transition:transform .2s ease}
+  .book:hover .cover{transform:translateY(-4px)}
+}
+.t{display:block;margin-top:.6rem;font-weight:700;line-height:1.45;overflow-wrap:anywhere}
+.a{display:block;color:var(--muted);font-size:.9rem;line-height:1.5}
+.empty{color:var(--muted);text-align:center;padding:3rem 0}
+
+.btn{font:inherit;font-weight:700;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.4rem 1.25rem;border-radius:10px;border:1.5px solid var(--accent);background:var(--accent);color:var(--on-accent);text-decoration:none;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent)}
+#more{display:flex;margin:2.5rem auto 0}
+
+dialog{border:0;padding:0;background:var(--surface);color:var(--ink);border-radius:14px;width:min(40rem,calc(100% - 1.5rem));max-height:calc(100% - 1.5rem)}
+dialog::backdrop{background:rgba(10,12,16,.55)}
+.x{position:absolute;top:.5rem;left:.5rem;z-index:2;width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:var(--ink);font-size:1.6rem;line-height:1;cursor:pointer}
+.d{display:grid;grid-template-columns:9rem 1fr;gap:1.25rem;padding:1.75rem 1.5rem 1.5rem}
+.d h2{margin:0 0 .15rem 2.5rem;font-size:1.45rem;line-height:1.4}
+.d .desc{margin:.75rem 0 0}
+.acts{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.25rem}
+audio{display:block;width:100%;margin-top:1.25rem}
+@media (max-width:30rem){.d{grid-template-columns:1fr}.d .cover{width:8rem}}
+
+#reader{width:100%;height:100%;max-width:none;max-height:none;margin:0;border-radius:0}
+#reader[open]{display:flex;flex-direction:column}
+.bar{display:flex;align-items:center;gap:.75rem;padding:.25rem .5rem .25rem 1rem;border-bottom:1px solid var(--line)}
+.bar strong{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .x{position:static}
+#rs{color:var(--muted);font-size:.9rem}
+#pages{flex:1;overflow:auto;padding:1rem .5rem;background:var(--bg);-webkit-overflow-scrolling:touch}
+.page{max-width:52rem;margin:0 auto 1rem;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.page canvas{display:block;width:100%;height:auto}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <h1>پەڕتووک</h1>
+  <p class="sub" id="count">کتێبی کوردی بۆ خوێندنەوە و گوێگرتن</p>
+</header>
+
+<div class="tools">
+  <div class="wrap">
+    <input id="q" type="search" placeholder="گەڕان بە ناوی کتێب یان نووسەر" aria-label="گەڕان" autocomplete="off" enterkeyhint="search">
+    <div class="chips" id="chips" role="toolbar" aria-label="بەشەکان"></div>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="grid" id="grid"></div>
+  <p class="empty" id="empty" hidden>هیچ کتێبێک نەدۆزرایەوە. وشەیەکی تر تاقی بکەرەوە.</p>
+  <button class="btn ghost" id="more" type="button" hidden>کتێبی زیاتر پیشان بدە</button>
+  <noscript><p class="empty">بۆ بینینی کتێبەکان JavaScript چالاک بکە.</p></noscript>
+</main>
+
+<dialog id="book" aria-labelledby="bt">
+  <button class="x" type="button" data-close aria-label="داخستن">×</button>
+  <div class="d">
+    <div id="bc"></div>
+    <div>
+      <h2 id="bt"></h2>
+      <span class="a" id="ba"></span>
+      <p class="desc" id="bd"></p>
+      <div class="acts">
+        <button class="btn" id="read" type="button">خوێندنەوە</button>
+        <a class="btn ghost" id="dl" target="_blank" rel="noopener">داگرتنی PDF</a>
+      </div>
+      <audio id="au" controls preload="none" hidden></audio>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="reader" aria-labelledby="rt">
+  <div class="bar">
+    <strong id="rt"></strong>
+    <span id="rs" aria-live="polite"></span>
+    <button class="x" type="button" data-close aria-label="داخستنی خوێنەر">×</button>
+  </div>
+  <div id="pages"></div>
+</dialog>
+
+<script>
+(() => {
+  const PAGE_SIZE = 24;
+  const $ = s => document.querySelector(s);
+  const grid = $('#grid'), more = $('#more'), q = $('#q'), chips = $('#chips'),
+        empty = $('#empty'), count = $('#count'), dlg = $('#book'), reader = $('#reader');
+
+  let books = [], list = [], shown = 0, cat = '', pushed = false;
+
+  const KU = '٠١٢٣٤٥٦٧٨٩';
+  const num = n => String(n).replace(/\d/g, d => KU[d]);
+
+  // یەکسانکردنی پیت بۆ گەڕان: ي/ى → ی ، ك → ک ، لابردنی حەرەکە و ZWNJ و کشیدە
+  const norm = s => (s || '').toLowerCase()
+    .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک').replace(/ھ/g, 'ه')
+    .replace(/[\u064B-\u065F\u0670\u0640\u200C\u200D]/g, '');
+
+  const COLORS = ['#7a1f3d', '#1f4e5f', '#5b4a1c', '#2f3f6e', '#3d5a3a', '#6b2d5c', '#4a3b33'];
+  const colorFor = s => COLORS[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % COLORS.length];
+
+  const el = (tag, cls, text) => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text) e.textContent = text;
+    return e;
+  };
+
+  function generatedCover(b) {
+    const g = el('div', 'gen', b.title);
+    g.style.background = colorFor(b.title);
+    return g;
+  }
+
+  function cover(b, eager) {
+    const box = el('div', 'cover');
+    if (b.cover) {
+      const img = new Image();
+      if (eager) img.fetchPriority = 'high'; else img.loading = 'lazy';
+      img.decoding = 'async';
+      img.width = 200; img.height = 300; img.alt = '';
+      img.onerror = () => { img.remove(); box.append(generatedCover(b)); };
+      img.src = b.cover;
+      box.append(img);
+    } else {
+      box.append(generatedCover(b));
+    }
+    return box;
+  }
+
+  function card(b, eager) {
+    const btn = el('button', 'book');
+    btn.type = 'button';
+    btn.dataset.id = b.id;
+    btn.append(cover(b, eager), el('span', 't', b.title), el('span', 'a', b.author));
+    return btn;
+  }
+
+  function renderMore() {
+    const first = shown === 0;
+    const frag = document.createDocumentFragment();
+    list.slice(shown, shown + PAGE_SIZE).forEach((b, i) => frag.append(card(b, first && i < 6)));
+    shown = Math.min(shown + PAGE_SIZE, list.length);
+    grid.append(frag);
+    more.hidden = shown >= list.length;
+  }
+
+  function apply() {
+    const t = norm(q.value.trim());
+    list = books.filter(b => (!cat || b.category === cat) && (!t || b._s.includes(t)));
+    grid.textContent = '';
+    shown = 0;
+    renderMore();
+    empty.hidden = list.length > 0;
+  }
+
+  function buildChips() {
+    const cats = [...new Set(books.map(b => b.category).filter(Boolean))];
+    if (cats.length < 2) { chips.hidden = true; return; }
+    ['', ...cats].forEach(c => {
+      const b = el('button', 'chip', c || 'هەموو');
+      b.type = 'button';
+      b.dataset.cat = c;
+      b.setAttribute('aria-pressed', String(c === cat));
+      chips.append(b);
+    });
+  }
+
+  chips.addEventListener('click', e => {
+    const b = e.target.closest('.chip');
+    if (!b) return;
+    cat = b.dataset.cat;
+    chips.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', String(c === b)));
+    apply();
+  });
+
+  let timer;
+  q.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(apply, 150); });
+
+  more.addEventListener('click', renderMore);
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(es => { if (es[0].isIntersecting && !more.hidden) renderMore(); },
+      { rootMargin: '400px 0px' }).observe(more);
+  }
+
+  // ---------- پەنجەرەی کتێب ----------
+  const au = $('#au'), readBtn = $('#read'), dl = $('#dl');
+  let current = null;
+
+  function openBook(id, push) {
+    const b = books.find(x => x.id === id);
+    if (!b) return;
+    current = b;
+    $('#bc').replaceChildren(cover(b, true));
+    $('#bt').textContent = b.title;
+    $('#ba').textContent = [b.author, b.category].filter(Boolean).join('، ');
+    $('#bd').textContent = b.desc || '';
+    readBtn.hidden = !b.pdf;
+    dl.hidden = !b.pdf;
+    if (b.pdf) dl.href = b.pdf;
+    au.hidden = !b.audio;
+    if (b.audio) au.src = b.audio; else au.removeAttribute('src');
+    if (!dlg.open) dlg.showModal();
+    if (push) { history.pushState(null, '', '#' + encodeURIComponent(id)); pushed = true; }
+  }
+
+  grid.addEventListener('click', e => {
+    const b = e.target.closest('.book');
+    if (b) openBook(b.dataset.id, true);
+  });
+
+  document.addEventListener('click', e => {
+    if (e.target.matches('[data-close]')) e.target.closest('dialog').close();
+  });
+  dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+
+  dlg.addEventListener('close', () => {
+    au.pause();
+    if (location.hash) {
+      if (pushed) history.back();
+      else history.replaceState(null, '', location.pathname + location.search);
+    }
+    pushed = false;
+  });
+
+  addEventListener('popstate', () => {
+    if (!location.hash && dlg.open) { pushed = false; dlg.close(); }
+  });
+
+  // ---------- خوێنەری PDF (تەنها کاتێک پێویست بێت بار دەکرێت) ----------
+  const pages = $('#pages'), rs = $('#rs');
+  let pdfjs, pdfDoc, io;
+
+  async function renderPage(n, box) {
+    const page = await pdfDoc.getPage(n);
+    const base = page.getViewport({ scale: 1 });
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const vp = page.getViewport({ scale: (box.clientWidth / base.width) * dpr });
+    const c = document.createElement('canvas');
+    c.width = Math.floor(vp.width);
+    c.height = Math.floor(vp.height);
+    box.append(c);
+    await page.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise;
+  }
+
+  readBtn.addEventListener('click', async () => {
+    const b = current;
+    if (!b || !b.pdf) return;
+    au.pause();
+    $('#rt').textContent = b.title;
+    rs.textContent = 'بارکردن…';
+    pages.textContent = '';
+    reader.showModal();
+    try {
+      if (!pdfjs) {
+        pdfjs = await import('/vendor/pdfjs/pdf.min.mjs');
+        pdfjs.GlobalWorkerOptions.workerSrc = '/vendor/pdfjs/pdf.worker.min.mjs';
+      }
+      const P = '/vendor/pdfjs/';
+      pdfDoc = await pdfjs.getDocument({
+        url: b.pdf,
+        cMapUrl: P + 'cmaps/', cMapPacked: true,
+        standardFontDataUrl: P + 'standard_fonts/',
+        wasmUrl: P + 'wasm/', iccUrl: P + 'iccs/'
+      }).promise;
+      if (!reader.open) return;
+      const first = await pdfDoc.getPage(1);
+      const v = first.getViewport({ scale: 1 });
+      rs.textContent = num(pdfDoc.numPages) + ' لاپەڕە';
+      io = new IntersectionObserver(es => es.forEach(e => {
+        if (e.isIntersecting && !e.target.dataset.done) {
+          e.target.dataset.done = '1';
+          renderPage(+e.target.dataset.n, e.target).catch(() => {});
+        }
+      }), { root: pages, rootMargin: '800px 0px' });
+      const frag = document.createDocumentFragment();
+      for (let i = 1; i <= pdfDoc.numPages; i++) {
+        const d = el('div', 'page');
+        d.dataset.n = i;
+        d.style.aspectRatio = v.width + ' / ' + v.height;
+        frag.append(d);
+      }
+      pages.append(frag);
+      pages.querySelectorAll('.page').forEach(p => io.observe(p));
+    } catch (err) {
+      console.error(err);
+      rs.textContent = 'ناتوانرێت PDFـەکە لێرە بکرێتەوە. دوگمەی داگرتن بەکاربهێنە.';
+    }
+  });
+
+  reader.addEventListener('close', () => {
+    if (io) io.disconnect();
+    if (pdfDoc) pdfDoc.destroy();
+    io = pdfDoc = null;
+    pages.textContent = '';
+  });
+
+  // ---------- دەستپێکردن ----------
+  fetch('/books.json')
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(data => {
+      books = data.map(b => ({ ...b, _s: norm(b.title + ' ' + b.author + ' ' + (b.category || '')) }));
+      count.textContent = num(books.length) + ' کتێب، بۆ خوێندنەوە و گوێگرتن';
+      buildChips();
+      apply();
+      if (location.hash) openBook(decodeURIComponent(location.hash.slice(1)), false);
+    })
+    .catch(() => {
+      empty.textContent = 'لیستی کتێبەکان بار نەبوو. پەیوەندی ئینتەرنێت بپشکنە و لاپەڕەکە نوێ بکەرەوە.';
+      empty.hidden = false;
+    });
+
+  if ('serviceWorker' in navigator) {
+    addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
+  }
+})();
+</script>
+</body>
+</html>
