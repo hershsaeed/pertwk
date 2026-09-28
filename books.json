@@ -1,42 +1,12 @@
 [
   {
-    "id": "mem-u-zin",
-    "title": "مەم و زین",
-    "author": "ئەحمەدی خانی",
-    "category": "شیعر",
-    "desc": "داستانە شیعرییە ناودارەکەی ئەحمەدی خانی.",
-    "cover": "",
-    "pdf": "",
-    "audio": ""
-  },
-  {
-    "id": "diwani-nali",
-    "title": "دیوانی نالی",
-    "author": "نالی",
-    "category": "شیعر",
+    "id": "book-1",
+    "title": "ئەمەیە ئیسلام",
+    "author": "محمد قطب",
+    "category": "ڕابوون",
     "desc": "",
     "cover": "",
-    "pdf": "",
-    "audio": ""
-  },
-  {
-    "id": "diwani-mehwi",
-    "title": "دیوانی مەحوی",
-    "author": "مەحوی",
-    "category": "شیعر",
-    "desc": "",
-    "cover": "",
-    "pdf": "",
-    "audio": ""
-  },
-  {
-    "id": "nimuney-mezhu",
-    "title": "نموونەی کتێبێکی مێژوو",
-    "author": "ناوی نووسەر",
-    "category": "مێژوو",
-    "desc": "ئەمە تەنها نموونەیە؛ لە books.json بیگۆڕە.",
-    "cover": "",
-    "pdf": "",
+    "pdf": "https://pub-ab5849a5a37740e2b15c5a9b2e67ddaf.r2.dev",
     "audio": ""
   }
 ]
